@@ -1,0 +1,25 @@
+#ifndef _THRD_SYSTEM_ERROR_H_
+#define _THRD_SYSTEM_ERROR_H_
+
+#include <stdexcept>
+
+namespace std
+{
+
+    class system_error : public runtime_error
+    {
+    private:
+        int ec;
+
+    public:
+        system_error( int ec, const char* what_arg )
+            : runtime_error(what_arg), ec(ec) {}
+
+    public:
+        int code() const { return ec; }
+
+    };
+
+}
+
+#endif

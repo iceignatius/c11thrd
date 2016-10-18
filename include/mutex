@@ -1,0 +1,68 @@
+/*
+ * C++11 Thread Library - Mutex
+ */
+#ifndef _THRD_MUTEX_
+#define _THRD_MUTEX_
+
+#include "system_error"
+
+#ifdef __linux__
+    #include <bits/pthreadtypes.h>
+#endif
+#ifdef _WIN32
+    #include <windows.h>
+#endif
+
+#if   defined(__linux__)
+    #define THRD_CALL
+#elif defined(_WIN32)
+    #define THRD_CALL __stdcall
+#else
+    #define THRD_CALL
+#endif
+
+namespace std
+{
+
+    class mutex_base
+    {
+    private:
+    #if   defined(__linux__)
+        pthread_mutex_t  obj;
+    #elif defined(_WIN32)
+        CRITICAL_SECTION obj;
+    #else
+        #error No implementation on this platform!
+    #endif
+
+    public:
+    #if   defined(__linux__)
+        typedef pthread_mutex_t* native_handle_type;
+    #elif defined(_WIN32)
+        typedef CRITICAL_SECTION* native_handle_type;
+    #else
+        #error No implementation on this platform!
+    #endif
+
+    public:
+        THRD_CALL mutex_base(bool bRecursive);
+        THRD_CALL ~mutex_base();
+    private:
+        mutex_base(const mutex_base&);             // Not allowed to use
+        mutex_base& operator=(const mutex_base&);  // Not allowed to use
+
+    public:
+        void THRD_CALL lock();
+        bool THRD_CALL try_lock();
+        void THRD_CALL unlock();
+
+        native_handle_type THRD_CALL native_handle(){ return &obj; }
+
+    };
+
+    class mutex           : public mutex_base { public: mutex()           : mutex_base(false) {} };
+    class recursive_mutex : public mutex_base { public: recursive_mutex() : mutex_base(true)  {} };
+
+}
+
+#endif
