@@ -46,9 +46,10 @@ void   THRDS_CALL thrd_exit( int res );
 int    THRDS_CALL thrd_detach( thrd_t thr );
 int    THRDS_CALL thrd_join( thrd_t thr, int *res );
 
-typedef struct mtx_t
+typedef union mtx_t
 {
-    char bindata[40];
+    long dummy;     // This value is used to force memory aligned with long integer.
+    char data[40];
 } mtx_t;
 
 enum
