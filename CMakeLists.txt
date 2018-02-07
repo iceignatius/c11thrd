@@ -1,6 +1,8 @@
 cmake_minimum_required(VERSION 3.5)
 project(c11thrd)
 
+option(SUPPORT_CPP_FEATURES "Support C++ features" ON)
+
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
 if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
@@ -17,8 +19,10 @@ if(CMAKE_COMPILER_IS_GNUCC OR CMAKE_COMPILER_IS_GNUCXX)
 endif()
 
 set(srcfiles ${srcfiles} ${CMAKE_SOURCE_DIR}/src/threads.c)
-set(srcfiles ${srcfiles} ${CMAKE_SOURCE_DIR}/src/mutex.cpp)
 set(srcfiles ${srcfiles} ${CMAKE_SOURCE_DIR}/src/spinlock.c)
+if( SUPPORT_CPP_FEATURES )
+    set(srcfiles ${srcfiles} ${CMAKE_SOURCE_DIR}/src/mutex.cpp)
+endif()
 
 add_library(c11thrd ${srcfiles})
 
